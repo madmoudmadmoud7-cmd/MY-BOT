@@ -34,4 +34,4 @@ def chat_interface(question):
 demo = gr.Interface(fn=chat_interface, inputs="text", outputs="text")
 demo.launch()
             except Exception as e:
-                st.error(f"حدث خطأ في الاتصال: {e}")
+                st.error(f"حدث 
