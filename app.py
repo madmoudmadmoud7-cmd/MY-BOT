@@ -25,8 +25,6 @@ if api_key:
                     )
                     st.success("الرد:")
                     st.write(response.choices[0].message.content)
-                except Exception as e:
-                    st.error(f"خطأ في الاتصال: {e}")
         else:
             st.warning("يرجى كتابة سؤال.")
 else:
