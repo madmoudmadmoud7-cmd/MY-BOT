@@ -20,4 +20,4 @@ try:
         else:
             st.warning("يرجى كتابة سؤال.")
 except Exception as e:
-    st.error(f"حدث خطأ: {e}")
+    
