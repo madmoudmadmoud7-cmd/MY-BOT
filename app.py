@@ -30,4 +30,4 @@ if api_key:
         else:
             st.warning("يرجى كتابة سؤال.")
 else:
-    st.info("يرجى إدخال مفتاح OpenAI API للمتابعة.")
+    st.info("يرجى إدخال مفتاح  للمتابعة.")
