@@ -1,31 +1,23 @@
 import streamlit as st
-from openai import OpenAI
+from groq import Groq
 
-# 1. عنوان التطبيق
-st.title("🤖 بوت خدمة العملاء")
+st.title("🤖 بوت خدمة العملاء (Groq)")
 
-# 2. إعداد المفتاح (بدون تعقيدات)
-# ارفع هذا الكود، وعندما يطلب منك المربع المفتاح، ضع مفتاحك الجديد فيه
-api_key = st.text_input("ضع مفتاح API الخاص بك هنا:", type="password")
-
-if api_key:
-    client = OpenAI(api_key=api_key)
+# قراءة المفتاح من الـ Secrets
+try:
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
     
-    # 3. صندوق إدخال السؤال
-    user_input = st.text_input("اطرح سؤالك:")
-    
-    # 4. زر الإرسال
+    user_input = st.text_input("اسألني أي سؤال:")
     if st.button("إرسال"):
         if user_input:
             with st.spinner("جاري التفكير..."):
-                try:
-                    response = client.chat.completions.create(
-                        model="gpt-4o",
-                        messages=[{"role": "user", "content": user_input}]
-                    )
-                    st.success("الرد:")
-                    st.write(response.choices[0].message.content)
+                chat_completion = client.chat.completions.create(
+                    messages=[{"role": "user", "content": user_input}],
+                    model="llama3-8b-8192",
+                )
+                st.success("الرد:")
+                st.write(chat_completion.choices[0].message.content)
         else:
             st.warning("يرجى كتابة سؤال.")
-else:
-    st.info("يرجى إدخال مفتاح  للمتابعة.")
+except Exception as e:
+    st.error(f"حدث خطأ: {e}")
