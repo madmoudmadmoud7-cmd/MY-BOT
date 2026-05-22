@@ -28,7 +28,6 @@ else:
                 st.write("الإجابة:")
                 st.write(response.choices[0].message.content)
                 import gradio as gr
-
 def chat_interface(question):
     return get_bot_response(question, "your_file.pdf")
 
