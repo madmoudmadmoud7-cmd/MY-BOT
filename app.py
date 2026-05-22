@@ -18,5 +18,3 @@ if "OPENAI_API_KEY" in st.secrets:
             st.write(response.choices[0].message.content)
         else:
             st.warning("يرجى كتابة سؤال.")
-else:
-    st.error("مفتاح API غير موجود في الإعدادات.")
