@@ -27,5 +27,12 @@ else:
                 )
                 st.write("الإجابة:")
                 st.write(response.choices[0].message.content)
+                import gradio as gr
+
+def chat_interface(question):
+    return get_bot_response(question, "your_file.pdf")
+
+demo = gr.Interface(fn=chat_interface, inputs="text", outputs="text")
+demo.launch()
             except Exception as e:
                 st.error(f"حدث خطأ في الاتصال: {e}")
