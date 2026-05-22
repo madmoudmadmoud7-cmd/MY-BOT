@@ -15,7 +15,7 @@ else:
 
 # إعداد مكتبة جوجل
 try:
-    genai.configure(api_key=api_key)
+    genai.configure()AIzaSyA-CBfTJ2UEQGk-amHsEyZ9sEOC7cYuGzQ
     
     # اختيار الموديل (تم تغيير الموديل لـ gemini-1.5-pro لضمان الاستقرار)
     # يمكنك العودة لـ gemini-1.5-flash إذا كان مفتاحك يدعمه في المنطقة الجغرافية الخاصة بك
