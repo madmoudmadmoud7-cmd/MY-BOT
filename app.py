@@ -1,9 +1,9 @@
 import streamlit as st
-import time
+from datetime import datetime
 
-st.set_page_config(page_title="مشروع الذكاء الاصطناعي", layout="centered")
+st.set_page_config(page_title="مساعدك الذكي", layout="centered")
 
-st.title("🤖 مساعدك الذكي للمشاريع")
+st.title("🤖 المساعد الذكي")
 
 # تهيئة سجل المحادثة
 if "messages" not in st.session_state:
@@ -15,34 +15,22 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # إدخال المستخدم
-if prompt := st.chat_input("اسألني أي شيء عن المشروع..."):
-    # عرض سؤال المستخدم
+if prompt := st.chat_input("اكتب سؤالك هنا..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # رد البوت التلقائي (ديمو)
+    # الرد المنطقي (نظيف وشغال)
     with st.chat_message("assistant"):
-        with st.spinner("جاري تحليل البيانات..."):
-            time.sleep(1.5) # وقت التفكير
-            response = "# رد البوت الذكي (ديمو مقنع)
-    with st.chat_message("assistant"):
-        with st.spinner("جاري قراءة ملف المشروع..."):
-            time.sleep(1.5)
-            
-            # إذا سأل عن الوقت، يجاوب بالوقت
-            if "الساعة" in prompt or "الوقت" in prompt:
-                from datetime import datetime
-                response = f"الساعة الآن هي {datetime.now().strftime('%H:%M')}."
-            
-            # إذا سأل أي شيء آخر، يجاوب بإجابة تبدو حقيقية من الملف
-            else:
-                response = (f"بناءً على تحليل ملف المشروع المرفوع، الإجابة على استفسارك حول '{prompt}' هي:\n\n"
-                            "1. المخطط المبدئي يوضح أهمية الجدول الزمني المقترح.\n"
-                            "2. تم تخصيص الموارد المطلوبة للمرحلة الأولى.\n"
-                            "3. المشروع يسير وفقاً للأهداف الموضوعة في المستند.\n\n"
-                            "هل تحتاج لتوضيح أي نقطة أخرى من هذه النقاط؟")
-            
-            st.markdown(response)
-            st.markdown(response)
+        user_input = prompt.lower()
+        
+        if "الساعة" in user_input or "الوقت" in user_input:
+            response = f"الساعة الآن هي {datetime.now().strftime('%H:%M')}، يا فندم."
+        elif "ملفاتي" in user_input or "ملفات" in user_input:
+            response = "نعم بالطبع، يمكنك رفع ملفاتك وسأقوم بتحليلها ومساعدتك في الإجابة على أي استفسار بخصوصها فوراً."
+        else:
+            response = "أهلاً بك! أنا مساعدك الذكي، جاهز للإجابة على استفساراتك أو مساعدتك في تحليل ملفاتك. كيف يمكنني خدمتك؟"
+        
+        st.markdown(response)
+    
     st.session_state.messages.append({"role": "assistant", "content": response})
