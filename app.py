@@ -11,7 +11,7 @@ api_key = st.text_input("أدخل Google API Key:", type="password")
 if api_key:
     # 2. تعريف الموديل
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key)
+        llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=api_key)
         st.success("تم الاتصال بـ Gemini بنجاح!")
     except Exception as e:
         st.error(f"خطأ في الاتصال: {e}")
