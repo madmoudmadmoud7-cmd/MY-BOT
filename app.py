@@ -11,7 +11,6 @@ if api_key:
     # 1. إعداد Gemini
     try:
         llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=api_key)
-        st.success("تم الاتصال بـ Gemini بنجاح!")
     except Exception as e:
         st.error(f"خطأ في الاتصال: {e}")
     
