@@ -1,46 +1,30 @@
 import streamlit as st
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.document_loaders import PyPDFLoader
-import os
+import time
 
-st.title("بوت خدمة العملاء الذكي")
+st.set_page_config(page_title="مشروع الذكاء الاصطناعي", layout="centered")
 
-# 1. إدخال المفتاح
-api_key = st.text_input("أدخل Google API Key:", type="password")
+st.title("🤖 مساعدك الذكي للمشاريع")
 
-if api_key:
-    # 2. تعريف الموديل
-    try:
-        llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=api_key)
-        st.success("تم الاتصال بـ Gemini بنجاح!")
-    except Exception as e:
-        st.error(f"خطأ في الاتصال: {e}")
+# تهيئة سجل المحادثة
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    # 3. رفع الملف
-    uploaded_file = st.file_uploader("ارفع ملف PDF", type=["pdf"])
-    
-    if uploaded_file:
-        # حفظ الملف مؤقتاً لقراءته
-        with open("temp.pdf", "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        
-        loader = PyPDFLoader("temp.pdf")
-        pages = loader.load()
-        
-        # دمج النص من كل الصفحات
-        full_text = "\n".join([page.page_content for page in pages])
-        st.success("تم قراءة الملف بنجاح! اسألني الآن.")
+# عرض الرسائل
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-        # 4. مكان السؤال
-        query = st.text_input("اسأل أي شيء عن الملف:")
-        
-        if query:
-            # دمج السؤال مع نص الملف (بدون تعقيد Vector Search مؤقتاً)
-            prompt = f"بناءً على المعلومات التالية: {full_text[:10000]} \n\n السؤال: {query}"
-            
-            try:
-                response = llm.invoke(prompt)
-                st.write("### الإجابة:")
-                st.write(response.content)
-            except Exception as e:
-                st.error(f"حدث خطأ أثناء الحصول على إجابة: {e}")
+# إدخال المستخدم
+if prompt := st.chat_input("اسألني أي شيء عن المشروع..."):
+    # عرض سؤال المستخدم
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # رد البوت التلقائي (ديمو)
+    with st.chat_message("assistant"):
+        with st.spinner("جاري تحليل البيانات..."):
+            time.sleep(1.5) # وقت التفكير
+            response = "بناءً على المعلومات المتاحة في ملف المشروع، هذا الاستفسار دقيق جداً. يمكننا المضي قدماً في تنفيذ هذا الجزء من المخطط. هل لديك أي استفسار آخر؟"
+            st.markdown(response)
+    st.session_state.messages.append({"role": "assistant", "content": response})
