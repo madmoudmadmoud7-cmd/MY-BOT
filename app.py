@@ -1,28 +1,46 @@
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+import os
 
-# إعداد الواجهة
-st.title("بوت خدمة عملاء ذكي (Vector Search)")
+st.title("بوت خدمة العملاء الذكي")
 
-api_key = st.text_input("ادخل مفتاح Google API:", type="password")
+# 1. إدخال المفتاح
+api_key = st.text_input("أدخل Google API Key:", type="password")
 
 if api_key:
-    # 1. إعداد Gemini
+    # 2. تعريف الموديل
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=api_key)
+        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key)
+        st.success("تم الاتصال بـ Gemini بنجاح!")
     except Exception as e:
         st.error(f"خطأ في الاتصال: {e}")
-    
-    # 2. رفع ملف العميل (PDF)
-    uploaded_file = st.file_uploader("ارفع ملف المعلومات الخاص بك", type="pdf")
+
+    # 3. رفع الملف
+    uploaded_file = st.file_uploader("ارفع ملف PDF", type=["pdf"])
     
     if uploaded_file:
-        st.success("تم رفع الملف بنجاح! اسأل الآن.")
+        # حفظ الملف مؤقتاً لقراءته
+        with open("temp.pdf", "wb") as f:
+            f.write(uploaded_file.getbuffer())
         
-        # كود المحادثة
-        query = st.text_input("اسألني عن محتوى الملف:")
+        loader = PyPDFLoader("temp.pdf")
+        pages = loader.load()
+        
+        # دمج النص من كل الصفحات
+        full_text = "\n".join([page.page_content for page in pages])
+        st.success("تم قراءة الملف بنجاح! اسألني الآن.")
+
+        # 4. مكان السؤال
+        query = st.text_input("اسأل أي شيء عن الملف:")
+        
         if query:
-            with st.spinner('جاري التفكير...'):
-                response = llm.invoke(query)
+            # دمج السؤال مع نص الملف (بدون تعقيد Vector Search مؤقتاً)
+            prompt = f"بناءً على المعلومات التالية: {full_text[:10000]} \n\n السؤال: {query}"
+            
+            try:
+                response = llm.invoke(prompt)
+                st.write("### الإجابة:")
                 st.write(response.content)
+            except Exception as e:
+                st.error(f"حدث خطأ أثناء الحصول على إجابة: {e}")
